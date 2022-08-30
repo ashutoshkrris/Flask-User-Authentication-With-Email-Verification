@@ -1,8 +1,11 @@
 from flask.cli import FlaskGroup
 
-from src import app
+from src import app, db
 
 import unittest
+import getpass
+
+from src.accounts.models import User
 
 
 cli = FlaskGroup(app)
@@ -18,9 +21,25 @@ def test():
     else:
         return 1
 
-@cli.command('hello')
-def say_hello():
-    print('Hello')
+
+@cli.command('create_admin')
+def create_admin():
+    """Creates the admin user."""
+    email = input("Enter email address: ")
+    password = getpass.getpass("Enter password: ")
+    confirm_password = getpass.getpass("Enter password again: ")
+    if password != confirm_password:
+        print("Passwords don't match")
+        return 1
+    try:
+        user = User(email=email, password=password)
+        db.session.add(user)
+        db.session.commit()
+        return 0
+    except Exception:
+        print("Couldn't create admin user.")
+        return 1
+
 
 if __name__ == "__main__":
     cli()
