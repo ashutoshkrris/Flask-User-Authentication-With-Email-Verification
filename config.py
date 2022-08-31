@@ -17,7 +17,16 @@ class Config(object):
     WTF_CSRF_ENABLED = True
     DEBUG_TB_ENABLED = False
     DEBUG_TB_INTERCEPT_REDIRECTS = False
-
+    SECURITY_PASSWORD_SALT = config('SECURITY_PASSWORD_SALT', default='very-important')
+    
+    # Mail Settings
+    MAIL_DEFAULT_SENDER = 'noreply@flask.com'
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 465
+    MAIL_USE_TLS = False
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = config('EMAIL_USER')
+    MAIL_PASSWORD = config('EMAIL_PASSWORD')
 
 class DevelopmentConfig(Config):
     DEVELOPMENT = True
