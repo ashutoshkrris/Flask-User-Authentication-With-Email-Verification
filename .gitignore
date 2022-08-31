@@ -1,6 +1,7 @@
 *.pyc
 *.sqlite
 .DS_Store
+.env
 .coverage
 env
 migrations

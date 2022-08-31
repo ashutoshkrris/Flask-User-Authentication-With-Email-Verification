@@ -30,15 +30,14 @@ def create_admin():
     confirm_password = getpass.getpass("Enter password again: ")
     if password != confirm_password:
         print("Passwords don't match")
-        return 1
-    try:
-        user = User(email=email, password=password)
-        db.session.add(user)
-        db.session.commit()
-        return 0
-    except Exception:
-        print("Couldn't create admin user.")
-        return 1
+    else:
+        try:
+            user = User(email=email, password=password, is_admin=True)
+            db.session.add(user)
+            db.session.commit()
+            print("Admin created successfully!")
+        except Exception:
+            print("Couldn't create admin user.")
 
 
 if __name__ == "__main__":
