@@ -14,12 +14,16 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String, nullable=False)
     created_on = db.Column(db.DateTime, nullable=False)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
+    is_active = db.Column(db.Boolean, nullable=False, default=False)
+    activated_on = db.Column(db.DateTime, nullable=True)
 
-    def __init__(self, email, password, is_admin=False):
+    def __init__(self, email, password, is_admin=False, is_active=False, activated_on=None):
         self.email = email
         self.password = bcrypt.generate_password_hash(password)
         self.created_on = datetime.now()
         self.is_admin = is_admin
+        self.is_active = is_active
+        self.activated_on = activated_on
 
     def __repr__(self):
         return f'<email {self.email}'
