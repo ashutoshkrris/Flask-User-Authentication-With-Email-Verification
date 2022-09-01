@@ -33,7 +33,7 @@ def create_admin():
     else:
         try:
             user = User(email=email, password=password, is_admin=True,
-                        is_active=True, activated_on=datetime.now())
+                        is_confirmed=True, confirmed_on=datetime.now())
             db.session.add(user)
             db.session.commit()
             print("Admin created successfully!")

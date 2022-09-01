@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import render_template, url_for, \
     redirect, flash, request, Blueprint
 from flask_login import login_user, logout_user, \
-    login_required
+    login_required, current_user
 
 
 from src.accounts.models import User
@@ -28,35 +28,17 @@ def register():
         token = generate_token(user.email)
         confirm_url = url_for('accounts.confirm_email',
                               token=token, _external=True)
-        html = render_template('accounts/confirm_email.html', confirm_url=confirm_url)
+        html = render_template(
+            'accounts/confirm_email.html', confirm_url=confirm_url)
         subject = "Please confirm your email"
         send_email(user.email, subject, html)
 
         login_user(user)
-        flash('A confirmation email has been sent via email.', 'success')
 
-        return redirect(url_for('core.home'))
+        flash('A confirmation email has been sent via email.', 'success')
+        return redirect(url_for('accounts.inactive'))
 
     return render_template('accounts/register.html', form=form)
-
-
-@accounts_bp.route('/confirm/<token>')
-def confirm_email(token):
-    try:
-        email = confirm_token(token)
-    except Exception:
-        flash('The confirmation link is invalid or has expired.', 'danger')
-    user = User.query.filter_by(email=email).first_or_404()
-
-    if user.is_active:
-        flash('Account already confirmed. Please login.', 'success')
-    else:
-        user.is_active = True
-        user.activated_on = datetime.now()
-        db.session.add(user)
-        db.session.commit()
-        flash('You have confirmed your account. Thanks!', 'success')
-    return redirect(url_for('core.home'))
 
 
 @accounts_bp.route('/login', methods=['GET', 'POST'])
@@ -80,3 +62,44 @@ def logout():
     logout_user()
     flash('You were logged out.', 'success')
     return redirect(url_for('accounts.login'))
+
+
+@accounts_bp.route('/confirm/<token>')
+@login_required
+def confirm_email(token):
+    if current_user.is_confirmed:
+        flash('Account already confirmed. Please login.', 'success')
+        return redirect(url_for('core.home'))
+    email = confirm_token(token)
+    user = User.query.filter_by(email=current_user.email).first_or_404()
+    if user.email == email:
+        user.is_confirmed = True
+        user.confirmed_on = datetime.now()
+        db.session.add(user)
+        db.session.commit()
+        flash('You have confirmed your account. Thanks!', 'success')
+    else:
+        flash('The confirmation link is invalid or has expired.', 'danger')
+    return redirect(url_for('core.home'))
+
+
+@accounts_bp.route('/inactive')
+@login_required
+def inactive():
+    if current_user.is_confirmed:
+        return redirect('core.home')
+    flash('Please confirm your account!', 'warning')
+    return render_template('accounts/inactive.html')
+
+
+@accounts_bp.route('/resend')
+@login_required
+def resend_confirmation():
+    token = generate_token(current_user.email)
+    confirm_url = url_for('accounts.confirm_email',
+                          token=token, _external=True)
+    html = render_template('accounts/confirm_email.html', confirm_url=confirm_url)
+    subject = "Please confirm your email"
+    send_email(current_user.email, subject, html)
+    flash('A new confirmation email has been sent.', 'success')
+    return redirect(url_for('accounts.inactive'))
