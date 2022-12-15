@@ -8,7 +8,7 @@ from flask_login import login_user, logout_user, \
 from src.accounts.models import User
 from src import db, bcrypt
 from src.accounts.token import confirm_token, generate_token
-from src.email import send_email
+from src.utils.email import send_email
 from .forms import LoginForm, RegisterForm
 
 
@@ -88,13 +88,15 @@ def confirm_email(token):
 def inactive():
     if current_user.is_confirmed:
         return redirect('core.home')
-    flash('Please confirm your account!', 'warning')
     return render_template('accounts/inactive.html')
 
 
 @accounts_bp.route('/resend')
 @login_required
 def resend_confirmation():
+    if current_user.is_confirmed:
+        flash('Your account has already been confirmed.', 'success')
+        return redirect(url_for('core.home'))
     token = generate_token(current_user.email)
     confirm_url = url_for('accounts.confirm_email',
                           token=token, _external=True)
