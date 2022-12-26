@@ -1,3 +1,3 @@
-# Flask Basic User Registration
+# Flask User Registration With Email Verification
 
 Tutorial coming soon..
