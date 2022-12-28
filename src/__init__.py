@@ -1,11 +1,10 @@
-from flask import Flask, render_template
-from flask_login import LoginManager
-from flask_bcrypt import Bcrypt
-from flask_mail import Mail
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-
 from decouple import config
+from flask import Flask, render_template
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
+from flask_mail import Mail
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config.from_object(config("APP_SETTINGS"))
@@ -39,9 +38,10 @@ def load_user(user_id):
 #### error handlers ####
 ########################
 
-@app.errorhandler(403)
-def forbidden_page(error):
-    return render_template("errors/403.html"), 403
+
+@app.errorhandler(401)
+def unauthorized_page(error):
+    return render_template("errors/401.html"), 401
 
 
 @app.errorhandler(404)

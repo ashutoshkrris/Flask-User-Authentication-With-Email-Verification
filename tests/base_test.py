@@ -1,15 +1,14 @@
+import os
+
 from flask_testing import TestCase
 
 from src import app, db
 from src.accounts.models import User
 
-import os
-
 
 class BaseTestCase(TestCase):
-
     def create_app(self):
-        app.config.from_object('config.TestingConfig')
+        app.config.from_object("config.TestingConfig")
         return app
 
     def setUp(self):
@@ -21,5 +20,5 @@ class BaseTestCase(TestCase):
     def tearDown(self):
         db.session.remove()
         db.drop_all()
-        testdb_path = os.path.join('src', 'testdb.sqlite')
+        testdb_path = os.path.join("src", "testdb.sqlite")
         os.remove(testdb_path)

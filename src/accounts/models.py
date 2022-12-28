@@ -2,7 +2,7 @@ from datetime import datetime
 
 from flask_login import UserMixin
 
-from src import db, bcrypt
+from src import bcrypt, db
 
 
 class User(UserMixin, db.Model):
@@ -17,7 +17,9 @@ class User(UserMixin, db.Model):
     is_confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.DateTime, nullable=True)
 
-    def __init__(self, email, password, is_admin=False, is_confirmed=False, confirmed_on=None):
+    def __init__(
+        self, email, password, is_admin=False, is_confirmed=False, confirmed_on=None
+    ):
         self.email = email
         self.password = bcrypt.generate_password_hash(password)
         self.created_on = datetime.now()
@@ -26,4 +28,4 @@ class User(UserMixin, db.Model):
         self.confirmed_on = confirmed_on
 
     def __repr__(self):
-        return f'<email {self.email}>'
+        return f"<email {self.email}>"

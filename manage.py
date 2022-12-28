@@ -11,10 +11,10 @@ from datetime import datetime
 cli = FlaskGroup(app)
 
 
-@cli.command('test')
+@cli.command("test")
 def test():
     """Runs the unit tests without coverage."""
-    tests = unittest.TestLoader().discover('tests')
+    tests = unittest.TestLoader().discover("tests")
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
         return 0
@@ -22,7 +22,7 @@ def test():
         return 1
 
 
-@cli.command('create_admin')
+@cli.command("create_admin")
 def create_admin():
     """Creates the admin user."""
     email = input("Enter email address: ")
@@ -32,11 +32,16 @@ def create_admin():
         print("Passwords don't match")
     else:
         try:
-            user = User(email=email, password=password, is_admin=True,
-                        is_confirmed=True, confirmed_on=datetime.now())
+            user = User(
+                email=email,
+                password=password,
+                is_admin=True,
+                is_confirmed=True,
+                confirmed_on=datetime.now(),
+            )
             db.session.add(user)
             db.session.commit()
-            print("Admin created successfully!")
+            print(f"Admin with email {email} created successfully!")
         except Exception:
             print("Couldn't create admin user.")
 
