@@ -15,11 +15,11 @@ def check_is_confirmed(func):
     return decorated_function
 
 
-def logout_required(self, func):
+def logout_required(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
         if current_user.is_authenticated:
-            flash("You are already registered.", "info")
+            flash("You are already authenticated.", "info")
             return redirect(url_for("core.home"))
         return func(*args, **kwargs)
 
