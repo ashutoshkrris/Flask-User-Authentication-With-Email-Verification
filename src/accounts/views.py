@@ -63,7 +63,7 @@ def logout():
 @login_required
 def confirm_email(token):
     if current_user.is_confirmed:
-        flash("Account already confirmed. Please login.", "success")
+        flash("Account already confirmed.", "success")
         return redirect(url_for("core.home"))
     email = confirm_token(token)
     user = User.query.filter_by(email=current_user.email).first_or_404()
@@ -82,7 +82,7 @@ def confirm_email(token):
 @login_required
 def inactive():
     if current_user.is_confirmed:
-        return redirect("core.home")
+        return redirect(url_for("core.home"))
     return render_template("accounts/inactive.html")
 
 
