@@ -13,8 +13,12 @@ class BaseTestCase(TestCase):
 
     def setUp(self):
         db.create_all()
-        user = User(email="ad@min.com", password="admin_user")
-        db.session.add(user)
+        unconfirmed_user = User(email="unconfirmeduser@gmail.com",
+                                password="unconfirmeduser")
+        db.session.add(unconfirmed_user)
+        confirmed_user = User(email="confirmeduser@gmail.com",
+                              password="confirmeduser", is_confirmed=True)
+        db.session.add(confirmed_user)
         db.session.commit()
 
     def tearDown(self):

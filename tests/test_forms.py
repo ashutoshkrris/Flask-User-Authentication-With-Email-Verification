@@ -8,18 +8,20 @@ from src.accounts.forms import LoginForm, RegisterForm
 class TestRegisterForm(BaseTestCase):
     def test_validate_success_register_form(self):
         # Ensure correct data validates.
-        form = RegisterForm(email="new@test.com", password="example", confirm="example")
+        form = RegisterForm(email="new@test.com",
+                            password="example", confirm="example")
         self.assertTrue(form.validate())
 
     def test_validate_invalid_password_format(self):
         # Ensure incorrect data does not validate.
-        form = RegisterForm(email="new@test.com", password="example", confirm="")
+        form = RegisterForm(email="new@test.com",
+                            password="example", confirm="")
         self.assertFalse(form.validate())
 
     def test_validate_email_already_registered(self):
         # Ensure user can't register when a duplicate email is used
         form = RegisterForm(
-            email="ad@min.com", password="admin_user", confirm="admin_user"
+            email="unconfirmeduser@gmail.com", password="unconfirmeduser", confirm="unconfirmeduser"
         )
         self.assertFalse(form.validate())
 
@@ -27,7 +29,8 @@ class TestRegisterForm(BaseTestCase):
 class TestLoginForm(BaseTestCase):
     def test_validate_success_login_form(self):
         # Ensure correct data validates.
-        form = LoginForm(email="ad@min.com", password="admin_user")
+        form = LoginForm(email="unconfirmeduser@gmail.com",
+                         password="unconfirmeduser")
         self.assertTrue(form.validate())
 
     def test_validate_invalid_email_format(self):
