@@ -1,3 +1,3 @@
-# Flask User Registration With Email Verification
+# Flask User Authentication With Email Verification
 
 Tutorial coming soon..
